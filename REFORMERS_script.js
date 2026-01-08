@@ -1,0 +1,367 @@
+//REFORMERS Training
+//Author : Lorenzo Cane, Deep Blue S.r.l.
+
+//--------------------------------------------------------
+//CONST & GLOBAL VAR
+const exportBtn = document.querySelector(".exportBtn");
+const addIndicatorBtn = document.querySelector(".addIndicatorBtn");
+const defaultBtn = document.querySelector(".defaultBtn");
+
+const defaultSetup = [
+    {
+        id: 1,
+        name: 'Youth Unemployment',
+        weight: 2,
+        proxies: [
+            { id: 1, name: 'State subsidy savings', value: 15000 },
+            { id: 2, name: 'New taxes paid', value: 5000 },
+            { id: 3, name: 'Healthcare savings', value: 1000 }
+        ]
+    },
+    {
+        id: 2,
+        name: 'Higher skills in existing workforce',
+        weight: 5,
+        proxies: [
+            { id: 1, name: 'Training value', value: 10000 }
+        ]
+    },
+    {
+        id: 3,
+        name: 'Lower air pollution',
+        weight: 7,
+        proxies: [
+            { id: 1, name: 'Healthcare savings', value: 7000 }
+        ]
+    }
+];
+
+
+let indicators = defaultSetup;
+//--------------------------------------------------------
+//FUNCTIONS
+function getMaxId(arr, prop) {
+    var max = 0;
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i][prop] > max) {
+            max = arr[i][prop];
+        }
+    }
+    return max;
+}
+
+function getMultiplier(weight) {
+    if (weight >= 4 && weight <= 7) return 1.25;
+    if (weight >= 8 && weight <= 10) return 1.5;
+
+    return 1;
+}
+
+function calculateRawValue(proxies) {
+    let rawValue = proxies.reduce(function (sum, proxy) {
+        return sum + (parseFloat(proxy.value) || 0);
+    }, 0);
+
+    return rawValue;
+}
+
+function calculateResult(indictor) {
+    const rawValue = calculateRawValue(indictor.proxies);
+    const multiplier = getMultiplier(indictor.weight);
+
+    return rawValue * multiplier;
+}
+
+function getTotalImpact() {
+    let impact = indicators.reduce(function (sum, ind) {
+        return sum + calculateResult(ind);
+    }, 0);
+
+    return impact;
+}
+
+function findIndicatorById(id) {
+    return indicators.find(function (ind) {
+        return ind.id === id;
+    });
+}
+
+function updateIndicator(id, field, value) {
+    let indicator = findIndicatorById(id);
+
+    if (indicator) {
+        if (field === 'weight') {
+            indicator[field] = Math.min(10, Math.max(1, parseInt(value) || 1));
+        } else {
+            indicator[field] = value;
+        }
+        renderAll();
+    }
+}
+
+function removeIndicatorById(id) {
+    indicators = indicators.filter(function (ind) {
+        return ind.id !== id;
+    });
+    renderAll();
+}
+
+function addNewIndicator() {
+    var newId = getMaxId(indicators, 'id') + 1;
+    indicators.push({
+        id: newId,
+        name: 'New Indicator ' + newId,
+        weight: 5,
+        proxies: [{ id: 1, name: 'Proxy 1', value: 0 }]
+    });
+    renderAll();
+}
+
+function updateIndicatorField(id, field, value) {
+    var indicator = findIndicatorById(id);
+    if (indicator) {
+        if (field === 'weight') {
+            indicator[field] = Math.min(10, Math.max(1, parseInt(value) || 1));
+        } else {
+            indicator[field] = value;
+        }
+        renderAll();
+    }
+}
+function addProxyToIndicator(indicatorId) {
+    let indicator = findIndicatorById(indicatorId);
+    if (indicator) {
+        let newProxyId = Math.max.apply(Math, indicator.proxies.map(function (p) { return p.id; })) + 1;
+        indicator.proxies.push({ id: newProxyId, name: 'Proxy ' + newProxyId, value: 0 });
+        renderAll();
+    }
+}
+
+function removeProxyFromIndicator(indicatorId, proxyId) {
+    var indicator = findIndicatorById(indicatorId);
+    if (indicator && indicator.proxies.length > 1) {
+        indicator.proxies = indicator.proxies.filter(function (p) {
+            return p.id !== proxyId;
+        });
+        renderAll();
+    }
+}
+
+function updateProxyField(indicatorId, proxyId, field, value) {
+    var indicator = findIndicatorById(indicatorId);
+    if (indicator) {
+        var proxy = indicator.proxies.find(function (p) {
+            return p.id === proxyId;
+        });
+        if (proxy) {
+            proxy[field] = field === 'value' ? (parseFloat(value) || 0) : value;
+            renderAll();
+        }
+    }
+}
+
+
+function createElement(tag, className, content) {
+    var element = document.createElement(tag);
+    if (className) element.className = className;
+    if (content) element.innerHTML = content;
+    return element;
+}
+
+// ==================== RENDER FUNCTIONS ====================
+function createProxyRow(indicatorId, proxy, isOnlyProxy) {
+    var row = createElement('div', 'proxy-row');
+
+    var nameDiv = createElement('div', 'proxy-name');
+    var nameInput = createElement('input');
+    nameInput.type = 'text';
+    nameInput.placeholder = 'Proxy name';
+    nameInput.value = proxy.name;
+    nameInput.addEventListener('change', function (e) {
+        updateProxyField(indicatorId, proxy.id, 'name', e.target.value);
+    });
+    nameDiv.appendChild(nameInput);
+
+    var valueDiv = createElement('div', 'proxy-value');
+    var valueInput = createElement('input');
+    valueInput.type = 'number';
+    valueInput.placeholder = 'Value';
+    valueInput.value = proxy.value;
+    valueInput.addEventListener('change', function (e) {
+        updateProxyField(indicatorId, proxy.id, 'value', e.target.value);
+    });
+    valueDiv.appendChild(valueInput);
+
+    var deleteBtn = createElement('button', 'delete-proxy', '🗑️ Delete proxy');
+    deleteBtn.disabled = isOnlyProxy;
+    deleteBtn.addEventListener('click', function () {
+        removeProxyFromIndicator(indicatorId, proxy.id);
+    });
+
+    row.appendChild(nameDiv);
+    row.appendChild(valueDiv);
+    row.appendChild(deleteBtn);
+
+    return row;
+}
+
+function createProxiesSection(indicator) {
+    var section = createElement('div', 'proxiesSection');
+
+    var header = createElement('h4');
+    header.textContent = 'Proxies ';
+    var addBtn = createElement('button', 'addProxyBtn', '➕ Add new proxy');
+    addBtn.addEventListener('click', function () {
+        addProxyToIndicator(indicator.id);
+    });
+    header.appendChild(addBtn);
+    section.appendChild(header);
+
+    indicator.proxies.forEach(function (proxy) {
+        var proxyRow = createProxyRow(indicator.id, proxy, indicator.proxies.length === 1);
+        section.appendChild(proxyRow);
+    });
+
+    return section;
+}
+
+function createResultsGrid(indicator) {
+    var rawValue = calculateRawValue(indicator.proxies);
+    var multiplier = getMultiplier(indicator.weight);
+    var result = calculateResult(indicator);
+
+    var grid = createElement('div', 'results-grid');
+
+    var rawItem = createElement('div', 'result-item');
+    rawItem.innerHTML = '<div class="result-label">Raw Value</div>' +
+        '<div class="result-value">€' + rawValue.toLocaleString() + '</div>';
+
+    var multItem = createElement('div', 'result-item');
+    multItem.innerHTML = '<div class="result-label">Multiplier</div>' +
+        '<div class="result-value">' + multiplier + 'x</div>';
+
+    var resItem = createElement('div', 'result-item');
+    resItem.innerHTML = '<div class="result-label">Result</div>' +
+        '<div class="result-value">€' + result.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</div>';
+
+    grid.appendChild(rawItem);
+    grid.appendChild(multItem);
+    grid.appendChild(resItem);
+
+    return grid;
+}
+
+function createIndicatorHeader(indicator) {
+    var header = createElement('div', 'indicator-header');
+
+    var nameGroup = createElement('div', 'form-group');
+    nameGroup.innerHTML = '<label>Indicator Name</label>';
+    var nameInput = createElement('input');
+    nameInput.type = 'text';
+    nameInput.value = indicator.name;
+    nameInput.addEventListener('change', function (e) {
+        updateIndicatorField(indicator.id, 'name', e.target.value);
+    });
+    nameGroup.appendChild(nameInput);
+
+    var weightGroup = createElement('div', 'form-group weight-group');
+    weightGroup.innerHTML = '<label>Stakeholder Weight (1-10)</label>';
+    var weightInput = createElement('input');
+    weightInput.type = 'number';
+    weightInput.min = '1';
+    weightInput.max = '10';
+    weightInput.value = indicator.weight;
+    weightInput.addEventListener('change', function (e) {
+        updateIndicatorField(indicator.id, 'weight', e.target.value);
+    });
+    weightGroup.appendChild(weightInput);
+
+    var deleteBtn = createElement('button', 'delete-indicator', '🗑️ Delete Indicator');
+    deleteBtn.addEventListener('click', function () {
+        removeIndicatorById(indicator.id);
+    });
+
+    header.appendChild(nameGroup);
+    header.appendChild(weightGroup);
+    header.appendChild(deleteBtn);
+
+    return header;
+}
+
+function createIndicatorCard(indicator) {
+    var card = createElement('div', 'indicator-card');
+
+    card.appendChild(createIndicatorHeader(indicator));
+    card.appendChild(createProxiesSection(indicator));
+    card.appendChild(createResultsGrid(indicator));
+
+    return card;
+}
+
+function renderIndicators() {
+    var container = document.querySelector(".indicatorsContainer");
+    container.innerHTML = '';
+
+    indicators.forEach(function (indicator) {
+        var card = createIndicatorCard(indicator);
+        container.appendChild(card);
+    });
+}
+
+function renderTotalImpact() {
+    var totalElement = document.querySelector('.impactValue');
+    totalElement.textContent = '€' + getTotalImpact().toLocaleString('en-US', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    });
+}
+
+function renderAll() {
+    renderIndicators();
+    renderTotalImpact();
+}
+
+function exportToCSV() {
+    var csv = 'Indicator,Stakeholder Weight (1-10),Proxy,Proxy Value,Raw Value,Multiplier,Result\n';
+
+    for (var i = 0; i < indicators.length; i++) {
+        var ind = indicators[i];
+        var rawValue = calculateRawValue(ind.proxies);
+        var multiplier = getMultiplier(ind.weight);
+        var result = calculateResult(ind);
+
+        for (var j = 0; j < ind.proxies.length; j++) {
+            var proxy = ind.proxies[j];
+            if (j === 0) {
+                csv += '"' + ind.name + '",' + ind.weight + ',"' + proxy.name + '",€' + proxy.value + ',€' + rawValue + ',' + multiplier + ',€' + result.toFixed(2) + '\n';
+            } else {
+                csv += ',,"' + proxy.name + '",€' + proxy.value + ',,,\n';
+            }
+        }
+    }
+
+    csv += '\nTotal Impact,,,,,,€' + getTotalImpact().toFixed(2);
+
+    var blob = new Blob([csv], { type: 'text/csv' });
+    var url = window.URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'seia_sroi_analysis.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+
+function resetToDefault() {
+    var container = document.querySelector('.indicatorsContainer');
+    container.innerHTML = '';
+    indicators = defaultSetup;
+    renderAll();
+}
+
+addIndicatorBtn.addEventListener("click", addNewIndicator);
+defaultBtn.addEventListener("click", () => {
+    window.location.reload();
+});
+exportBtn.addEventListener("click", exportToCSV);
+
+renderAll();

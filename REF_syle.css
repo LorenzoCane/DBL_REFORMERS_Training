@@ -1,6 +1,6 @@
 /* 
 REFORMERS Training.
-Author: Lorenzo Cane
+Author: Lorenzo Cane, Deep Blue S.r.l.
 
 Last version : 07/01/2026
 */
@@ -22,7 +22,7 @@ body {
 }
 
 .header {
-    background-color: cornflowerblue;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 30px;
     margin-bottom: 20px;
 }
@@ -30,8 +30,13 @@ body {
 .headerTop {
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
-    margin-bottom: 10px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.headerTop img {
+    justify-self: start;
 }
 
 .headerBottom {
@@ -44,6 +49,13 @@ h1 {
     font-size: 2em;
 }
 
+.title {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-left: 100px;
+}
+
 .subtitle {
     font-size: 0.95em;
 }
@@ -53,6 +65,7 @@ h1 {
     background: azure;
     border-color: black;
     border: 25px;
+    border-radius: 8px;
     margin: 5px;
     padding: 20px;
     justify-content: space-between;
@@ -71,25 +84,6 @@ h1 {
 h3 {
     font-size: 0.95em;
     margin-bottom: 5px;
-}
-
-
-.exportBtn {
-    background: #43bb78;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.exportBtn:hover {
-    background: #38a169;
 }
 
 .addIndicatorBtn {
@@ -111,4 +105,284 @@ h3 {
 
 .addIndicatorBtn:hover {
     background: #3182ce;
+}
+
+
+.indicator-card {
+    background: #f7fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.indicator-header {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    flex: 1;
+}
+
+.form-group label {
+    display: block;
+    color: #4a5568;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.weight-group {
+    width: 200px;
+}
+
+.delete-indicator {
+    background: #F00A0A;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 28px;
+    font-size: 0.9em;
+    transition: background 0.3s;
+}
+
+.delete-indicator:hover {
+    background: #BF0D0D;
+}
+
+.proxies-section h4 {
+    color: #2d3748;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.add-proxy-btn {
+    background: #4299e1;
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: background 0.3s;
+}
+
+.add-proxy-btn:hover {
+    background: #3182ce;
+}
+
+.proxy-row {
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.proxy-name {
+    flex: 1;
+}
+
+.proxy-value {
+    width: 180px;
+    position: relative;
+}
+
+.proxy-value input {
+    padding-left: 30px;
+}
+
+.proxy-value::before {
+    content: '€';
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #718096;
+    z-index: 1;
+}
+
+.delete-proxy {
+    background: #fc8181;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: background 0.3s;
+}
+
+.delete-proxy:hover {
+    background: #f56565;
+}
+
+.delete-proxy:disabled {
+    background: #cbd5e0;
+    cursor: not-allowed;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.result-item {
+    text-align: center;
+}
+
+.result-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85em;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.result-value {
+    color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.add-indicator-btn {
+    background: #4299e1;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+    margin-bottom: 20px;
+}
+
+.add-indicator-btn:hover {
+    background: #3182ce;
+}
+
+.finalBtn {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 50px;
+    padding: 10px;
+}
+
+.finalBtn button {
+    width: 300px;
+}
+
+.defaultBtn {
+    background: #F00A0A;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+    margin-bottom: 20px;
+    gap: 8px;
+}
+
+.defaultBtn:hover {
+    background: #BF0D0D;
+}
+
+.exportBtn {
+    background: #43bb78;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    transition: background 0.3s;
+}
+
+.exportBtn:hover {
+    background: #38a169;
+}
+
+.totalImpact {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    color: white;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+}
+
+.impactLabel {
+    font-size: 1.1em;
+    opacity: 0.95;
+    margin-bottom: 8px;
+}
+
+.impactValue {
+    font-size: 2.5em;
+    font-weight: bold;
+}
+
+.about {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.about h3 {
+    color: #2d3748;
+    margin-bottom: 12px;
+}
+
+.about p {
+    color: #718096;
+    line-height: 1.6;
+    font-size: 0.95em;
 }
