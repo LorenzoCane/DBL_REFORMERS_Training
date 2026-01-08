@@ -13,6 +13,7 @@ Last version : 07/01/2026
 }
 
 body {
+    background: #AEE1E8;
     display: flex;
     flex-direction: column;
     background: whitesmoke;
@@ -385,4 +386,18 @@ h3 {
     color: #718096;
     line-height: 1.6;
     font-size: 0.95em;
+}
+
+.footer {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    ;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 10px;
+    gap: 150px;
+    margin-bottom: 10px;
+    color: white;
+    font-size: small;
 }
