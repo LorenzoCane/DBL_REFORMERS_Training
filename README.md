@@ -105,3 +105,7 @@ For questions,  suggestions, support, or any issues:
 
 ## Acknowledgments
 This tools is part of the [REFORMERS Project](https://reformers-energyvalleys.eu/), which received funding from the European Union’s research and innovation programme Horizon Europe under the grant agreement No.101136211 and Swiss Confederation. 
+
+## Further Reading 
+
+- [Social return on investment](https://en.wikipedia.org/wiki/Social_return_on_investment)
