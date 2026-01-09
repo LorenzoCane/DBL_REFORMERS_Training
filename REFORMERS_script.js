@@ -170,9 +170,9 @@ function createElement(tag, className, content) {
 
 // ==================== RENDER FUNCTIONS ====================
 function createProxyRow(indicatorId, proxy, isOnlyProxy) {
-    var row = createElement('div', 'proxy-row');
+    var row = createElement('div', 'proxyRow');
 
-    var nameDiv = createElement('div', 'proxy-name');
+    var nameDiv = createElement('div', 'proxyName');
     var nameInput = createElement('input');
     nameInput.type = 'text';
     nameInput.placeholder = 'Proxy name';
@@ -182,7 +182,7 @@ function createProxyRow(indicatorId, proxy, isOnlyProxy) {
     });
     nameDiv.appendChild(nameInput);
 
-    var valueDiv = createElement('div', 'proxy-value');
+    var valueDiv = createElement('div', 'proxyValue');
     var valueInput = createElement('input');
     valueInput.type = 'number';
     valueInput.placeholder = 'Value';
@@ -192,7 +192,7 @@ function createProxyRow(indicatorId, proxy, isOnlyProxy) {
     });
     valueDiv.appendChild(valueInput);
 
-    var deleteBtn = createElement('button', 'delete-proxy', '🗑️ Delete proxy');
+    var deleteBtn = createElement('button', 'deleteProxyBtn', '🗑️ Delete proxy');
     deleteBtn.disabled = isOnlyProxy;
     deleteBtn.addEventListener('click', function () {
         removeProxyFromIndicator(indicatorId, proxy.id);
@@ -230,19 +230,19 @@ function createResultsGrid(indicator) {
     var multiplier = getMultiplier(indicator.weight);
     var result = calculateResult(indicator);
 
-    var grid = createElement('div', 'results-grid');
+    var grid = createElement('div', 'resultsGrid');
 
-    var rawItem = createElement('div', 'result-item');
-    rawItem.innerHTML = '<div class="result-label">Raw Value</div>' +
-        '<div class="result-value">€' + rawValue.toLocaleString() + '</div>';
+    var rawItem = createElement('div', 'resultItem');
+    rawItem.innerHTML = '<div class="resultLabel">Raw Value</div>' +
+        '<div class="resultValue">€' + rawValue.toLocaleString() + '</div>';
 
-    var multItem = createElement('div', 'result-item');
-    multItem.innerHTML = '<div class="result-label">Multiplier</div>' +
-        '<div class="result-value">' + multiplier + 'x</div>';
+    var multItem = createElement('div', 'resultItem');
+    multItem.innerHTML = '<div class="resultLabel">Multiplier</div>' +
+        '<div class="resultValue">' + multiplier + 'x</div>';
 
-    var resItem = createElement('div', 'result-item');
-    resItem.innerHTML = '<div class="result-label">Result</div>' +
-        '<div class="result-value">€' + result.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</div>';
+    var resItem = createElement('div', 'resultItem');
+    resItem.innerHTML = '<div class="resultLabel">Result</div>' +
+        '<div class="resultValue">€' + result.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</div>';
 
     grid.appendChild(rawItem);
     grid.appendChild(multItem);
@@ -252,9 +252,9 @@ function createResultsGrid(indicator) {
 }
 
 function createIndicatorHeader(indicator) {
-    var header = createElement('div', 'indicator-header');
+    var header = createElement('div', 'indicatorHeader');
 
-    var nameGroup = createElement('div', 'form-group');
+    var nameGroup = createElement('div', 'formGroup');
     nameGroup.innerHTML = '<label>Indicator Name</label>';
     var nameInput = createElement('input');
     nameInput.type = 'text';
@@ -264,7 +264,7 @@ function createIndicatorHeader(indicator) {
     });
     nameGroup.appendChild(nameInput);
 
-    var weightGroup = createElement('div', 'form-group weight-group');
+    var weightGroup = createElement('div', 'formGroup weightGroup');
     weightGroup.innerHTML = '<label>Stakeholder Weight (1-10)</label>';
     var weightInput = createElement('input');
     weightInput.type = 'number';
@@ -276,7 +276,7 @@ function createIndicatorHeader(indicator) {
     });
     weightGroup.appendChild(weightInput);
 
-    var deleteBtn = createElement('button', 'delete-indicator', '🗑️ Delete Indicator');
+    var deleteBtn = createElement('button', 'deleteIndicatorBtn', '🗑️ Delete Indicator');
     deleteBtn.addEventListener('click', function () {
         removeIndicatorById(indicator.id);
     });
@@ -289,7 +289,7 @@ function createIndicatorHeader(indicator) {
 }
 
 function createIndicatorCard(indicator) {
-    var card = createElement('div', 'indicator-card');
+    var card = createElement('div', 'indicatorCard');
 
     card.appendChild(createIndicatorHeader(indicator));
     card.appendChild(createProxiesSection(indicator));
