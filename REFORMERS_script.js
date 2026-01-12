@@ -1,12 +1,13 @@
 //REFORMERS Training
 //Author : Lorenzo Cane, Deep Blue S.r.l.
 
-//--------------------------------------------------------
+//=========================================================
 //CONST & GLOBAL VAR
 const exportBtn = document.querySelector(".exportBtn");
 const addIndicatorBtn = document.querySelector(".addIndicatorBtn");
 const defaultBtn = document.querySelector(".defaultBtn");
 
+//Default Example
 const defaultSetup = [
     {
         id: 1,
@@ -38,9 +39,15 @@ const defaultSetup = [
 
 
 let indicators = defaultSetup;
-//--------------------------------------------------------
+
+//=========================================================
 //FUNCTIONS
+
+//General Utils
+
+
 function getMaxId(arr, prop) {
+    //Get the number of higher Indicator or proxy. To assign the correct one to the next
     var max = 0;
     for (var i = 0; i < arr.length; i++) {
         if (arr[i][prop] > max) {
@@ -50,6 +57,17 @@ function getMaxId(arr, prop) {
     return max;
 }
 
+//Create a generic element in HTML with a class and a content
+function createElement(tag, className, content) {
+    var element = document.createElement(tag);
+    if (className) element.className = className;
+    if (content) element.innerHTML = content;
+    return element;
+}
+//--------------------------------------------------------
+// LOGIC IMPLEMENTATION
+
+// Implement Multipliers logic based on selected Stakeholder Weight. No (1-10) check here because it is done in the code
 function getMultiplier(weight) {
     if (weight >= 4 && weight <= 7) return 1.25;
     if (weight >= 8 && weight <= 10) return 1.5;
@@ -57,6 +75,7 @@ function getMultiplier(weight) {
     return 1;
 }
 
+//Raw value as some of proxy value
 function calculateRawValue(proxies) {
     let rawValue = proxies.reduce(function (sum, proxy) {
         return sum + (parseFloat(proxy.value) || 0);
@@ -65,6 +84,7 @@ function calculateRawValue(proxies) {
     return rawValue;
 }
 
+//Results for a single indicators
 function calculateResult(indictor) {
     const rawValue = calculateRawValue(indictor.proxies);
     const multiplier = getMultiplier(indictor.weight);
@@ -72,6 +92,7 @@ function calculateResult(indictor) {
     return rawValue * multiplier;
 }
 
+//Total impact as sum of indicators results
 function getTotalImpact() {
     let impact = indicators.reduce(function (sum, ind) {
         return sum + calculateResult(ind);
@@ -80,12 +101,19 @@ function getTotalImpact() {
     return impact;
 }
 
+//SROI calculation (to be done)
+
+//--------------------------------------------------------
+//Indicators Functions
+
+//To find
 function findIndicatorById(id) {
     return indicators.find(function (ind) {
         return ind.id === id;
     });
 }
 
+//Update every possible field with input value
 function updateIndicator(id, field, value) {
     let indicator = findIndicatorById(id);
 
@@ -99,6 +127,7 @@ function updateIndicator(id, field, value) {
     }
 }
 
+//To remove indicator
 function removeIndicatorById(id) {
     indicators = indicators.filter(function (ind) {
         return ind.id !== id;
@@ -106,6 +135,7 @@ function removeIndicatorById(id) {
     renderAll();
 }
 
+//New indicator creation, as lat one. Use max ID to assign number
 function addNewIndicator() {
     var newId = getMaxId(indicators, 'id') + 1;
     indicators.push({
@@ -117,6 +147,7 @@ function addNewIndicator() {
     renderAll();
 }
 
+//Update indicators
 function updateIndicatorField(id, field, value) {
     var indicator = findIndicatorById(id);
     if (indicator) {
@@ -128,129 +159,8 @@ function updateIndicatorField(id, field, value) {
         renderAll();
     }
 }
-function addProxyToIndicator(indicatorId) {
-    let indicator = findIndicatorById(indicatorId);
-    if (indicator) {
-        let newProxyId = Math.max.apply(Math, indicator.proxies.map(function (p) { return p.id; })) + 1;
-        indicator.proxies.push({ id: newProxyId, name: 'Proxy ' + newProxyId, value: 0 });
-        renderAll();
-    }
-}
 
-function removeProxyFromIndicator(indicatorId, proxyId) {
-    var indicator = findIndicatorById(indicatorId);
-    if (indicator && indicator.proxies.length > 1) {
-        indicator.proxies = indicator.proxies.filter(function (p) {
-            return p.id !== proxyId;
-        });
-        renderAll();
-    }
-}
-
-function updateProxyField(indicatorId, proxyId, field, value) {
-    var indicator = findIndicatorById(indicatorId);
-    if (indicator) {
-        var proxy = indicator.proxies.find(function (p) {
-            return p.id === proxyId;
-        });
-        if (proxy) {
-            proxy[field] = field === 'value' ? (parseFloat(value) || 0) : value;
-            renderAll();
-        }
-    }
-}
-
-
-function createElement(tag, className, content) {
-    var element = document.createElement(tag);
-    if (className) element.className = className;
-    if (content) element.innerHTML = content;
-    return element;
-}
-
-// ==================== RENDER FUNCTIONS ====================
-function createProxyRow(indicatorId, proxy, isOnlyProxy) {
-    var row = createElement('div', 'proxyRow');
-
-    var nameDiv = createElement('div', 'proxyName');
-    var nameInput = createElement('input');
-    nameInput.type = 'text';
-    nameInput.placeholder = 'Proxy name';
-    nameInput.value = proxy.name;
-    nameInput.addEventListener('change', function (e) {
-        updateProxyField(indicatorId, proxy.id, 'name', e.target.value);
-    });
-    nameDiv.appendChild(nameInput);
-
-    var valueDiv = createElement('div', 'proxyValue');
-    var valueInput = createElement('input');
-    valueInput.type = 'number';
-    valueInput.placeholder = 'Value';
-    valueInput.value = proxy.value;
-    valueInput.addEventListener('change', function (e) {
-        updateProxyField(indicatorId, proxy.id, 'value', e.target.value);
-    });
-    valueDiv.appendChild(valueInput);
-
-    var deleteBtn = createElement('button', 'deleteProxyBtn', '🗑️ Delete proxy');
-    deleteBtn.disabled = isOnlyProxy;
-    deleteBtn.addEventListener('click', function () {
-        removeProxyFromIndicator(indicatorId, proxy.id);
-    });
-
-    row.appendChild(nameDiv);
-    row.appendChild(valueDiv);
-    row.appendChild(deleteBtn);
-
-    return row;
-}
-
-function createProxiesSection(indicator) {
-    var section = createElement('div', 'proxiesSection');
-
-    var header = createElement('h4');
-    header.textContent = 'Proxies ';
-    var addBtn = createElement('button', 'addProxyBtn', '➕ Add new proxy');
-    addBtn.addEventListener('click', function () {
-        addProxyToIndicator(indicator.id);
-    });
-    header.appendChild(addBtn);
-    section.appendChild(header);
-
-    indicator.proxies.forEach(function (proxy) {
-        var proxyRow = createProxyRow(indicator.id, proxy, indicator.proxies.length === 1);
-        section.appendChild(proxyRow);
-    });
-
-    return section;
-}
-
-function createResultsGrid(indicator) {
-    var rawValue = calculateRawValue(indicator.proxies);
-    var multiplier = getMultiplier(indicator.weight);
-    var result = calculateResult(indicator);
-
-    var grid = createElement('div', 'resultsGrid');
-
-    var rawItem = createElement('div', 'resultItem');
-    rawItem.innerHTML = '<div class="resultLabel">Raw Value</div>' +
-        '<div class="resultValue">€' + rawValue.toLocaleString() + '</div>';
-
-    var multItem = createElement('div', 'resultItem');
-    multItem.innerHTML = '<div class="resultLabel">Multiplier</div>' +
-        '<div class="resultValue">' + multiplier + 'x</div>';
-
-    var resItem = createElement('div', 'resultItem');
-    resItem.innerHTML = '<div class="resultLabel">Result</div>' +
-        '<div class="resultValue">€' + result.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</div>';
-
-    grid.appendChild(rawItem);
-    grid.appendChild(multItem);
-    grid.appendChild(resItem);
-
-    return grid;
-}
-
+//Indicator header with name and info
 function createIndicatorHeader(indicator) {
     var header = createElement('div', 'indicatorHeader');
 
@@ -288,6 +198,7 @@ function createIndicatorHeader(indicator) {
     return header;
 }
 
+//Create the whole indicator box
 function createIndicatorCard(indicator) {
     var card = createElement('div', 'indicatorCard');
 
@@ -298,6 +209,132 @@ function createIndicatorCard(indicator) {
     return card;
 }
 
+//--------------------------------------------------------
+//Proxies Function
+
+//Select the correct indicator and add proxy
+function addProxyToIndicator(indicatorId) {
+    let indicator = findIndicatorById(indicatorId);
+    if (indicator) {
+        let newProxyId = Math.max.apply(Math, indicator.proxies.map(function (p) { return p.id; })) + 1;
+        indicator.proxies.push({ id: newProxyId, name: 'Proxy ' + newProxyId, value: 0 });
+        renderAll();
+    }
+}
+
+function removeProxyFromIndicator(indicatorId, proxyId) {
+    var indicator = findIndicatorById(indicatorId);
+    if (indicator && indicator.proxies.length > 1) {
+        indicator.proxies = indicator.proxies.filter(function (p) {
+            return p.id !== proxyId;
+        });
+        renderAll();
+    }
+}
+
+function updateProxyField(indicatorId, proxyId, field, value) {
+    var indicator = findIndicatorById(indicatorId);
+    if (indicator) {
+        var proxy = indicator.proxies.find(function (p) {
+            return p.id === proxyId;
+        });
+        if (proxy) {
+            proxy[field] = field === 'value' ? (parseFloat(value) || 0) : value;
+            renderAll();
+        }
+    }
+}
+
+//Create the proxy into the HTML file with all its class and listeners
+function createProxyRow(indicatorId, proxy, isOnlyProxy) {
+    var row = createElement('div', 'proxyRow');
+
+    var nameDiv = createElement('div', 'proxyName');
+    var nameInput = createElement('input');
+    nameInput.type = 'text';
+    nameInput.placeholder = 'Proxy name';
+    nameInput.value = proxy.name;
+    nameInput.addEventListener('change', function (e) {
+        updateProxyField(indicatorId, proxy.id, 'name', e.target.value);
+    });
+    nameDiv.appendChild(nameInput);
+
+    var valueDiv = createElement('div', 'proxyValue');
+    var valueInput = createElement('input');
+    valueInput.type = 'number';
+    valueInput.placeholder = 'Value';
+    valueInput.value = proxy.value;
+    valueInput.addEventListener('change', function (e) {
+        updateProxyField(indicatorId, proxy.id, 'value', e.target.value);
+    });
+    valueDiv.appendChild(valueInput);
+
+    var deleteBtn = createElement('button', 'deleteProxyBtn', '🗑️ Delete proxy');
+    deleteBtn.disabled = isOnlyProxy;
+    deleteBtn.addEventListener('click', function () {
+        removeProxyFromIndicator(indicatorId, proxy.id);
+    });
+
+    row.appendChild(nameDiv);
+    row.appendChild(valueDiv);
+    row.appendChild(deleteBtn);
+
+    return row;
+}
+
+//Create the global Proxies section of an indicator
+function createProxiesSection(indicator) {
+    var section = createElement('div', 'proxiesSection');
+
+    var header = createElement('h4');
+    header.textContent = 'Proxies ';
+    var addBtn = createElement('button', 'addProxyBtn', '➕ Add new proxy');
+    addBtn.addEventListener('click', function () {
+        addProxyToIndicator(indicator.id);
+    });
+    header.appendChild(addBtn);
+    section.appendChild(header);
+
+    indicator.proxies.forEach(function (proxy) {
+        var proxyRow = createProxyRow(indicator.id, proxy, indicator.proxies.length === 1);
+        section.appendChild(proxyRow);
+    });
+
+    return section;
+}
+
+//--------------------------------------------------------
+//Results function
+function createResultsGrid(indicator) {
+    var rawValue = calculateRawValue(indicator.proxies);
+    var multiplier = getMultiplier(indicator.weight);
+    var result = calculateResult(indicator);
+
+    var grid = createElement('div', 'resultsGrid');
+
+    var rawItem = createElement('div', 'resultItem');
+    rawItem.innerHTML = '<div class="resultLabel">Raw Value</div>' +
+        '<div class="resultValue">€' + rawValue.toLocaleString() + '</div>';
+
+    var multItem = createElement('div', 'resultItem');
+    multItem.innerHTML = '<div class="resultLabel">Multiplier</div>' +
+        '<div class="resultValue">' + multiplier + 'x</div>';
+
+    var resItem = createElement('div', 'resultItem');
+    resItem.innerHTML = '<div class="resultLabel">Result</div>' +
+        '<div class="resultValue">€' + result.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</div>';
+
+    grid.appendChild(rawItem);
+    grid.appendChild(multItem);
+    grid.appendChild(resItem);
+
+    return grid;
+}
+
+//--------------------------------------------------------
+// RENDER FUNCTIONS 
+
+//Update indicatos
 function renderIndicators() {
     var container = document.querySelector(".indicatorsContainer");
     container.innerHTML = '';
@@ -308,6 +345,7 @@ function renderIndicators() {
     });
 }
 
+//Update total impact
 function renderTotalImpact() {
     var totalElement = document.querySelector('.impactValue');
     totalElement.textContent = '€' + getTotalImpact().toLocaleString('en-US', {
@@ -320,6 +358,9 @@ function renderAll() {
     renderIndicators();
     renderTotalImpact();
 }
+
+//--------------------------------------------------------
+//Export function
 
 function exportToCSV() {
     var csv = 'Indicator,Stakeholder Weight (1-10),Proxy,Proxy Value,Raw Value,Multiplier,Result\n';
@@ -351,6 +392,8 @@ function exportToCSV() {
     window.URL.revokeObjectURL(url);
 }
 
+//--------------------------------------------------------
+//Reset function
 function resetToDefault() {
     var container = document.querySelector('.indicatorsContainer');
     container.innerHTML = '';
@@ -358,10 +401,18 @@ function resetToDefault() {
     renderAll();
 }
 
+
+//=========================================================
+//Buttons actions
+
+//New indicator
 addIndicatorBtn.addEventListener("click", addNewIndicator);
+//Default reset
 defaultBtn.addEventListener("click", () => {
     window.location.reload();
 });
+//Export to CSV
 exportBtn.addEventListener("click", exportToCSV);
 
+//=========================================================
 renderAll();
