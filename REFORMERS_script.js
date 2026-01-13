@@ -176,6 +176,7 @@ function createIndicatorHeader(indicator) {
 
     var weightGroup = createElement('div', 'formGroup weightGroup');
     weightGroup.innerHTML = '<label>Stakeholder Weight (1-10)</label>';
+    weightGroup.innerHTML = '<label'
     var weightInput = createElement('input');
     weightInput.type = 'number';
     weightInput.min = '1';
