@@ -100,6 +100,46 @@ h1 {
     border-color: #04215b;
 }
 
+.investment {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.investment label {
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    padding-left: 5px;
+    color: #4a5568;
+    font-weight: 600;
+}
+
+.investment input {
+    font-size: 1em;
+    border: 2px solid transparent;
+    padding: 9px 48px;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.3s;
+}
+
+.investment input:focus {
+    outline: none;
+    border-color: #04215b;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+#investmentUnit {
+    content: '€';
+    position: absolute;
+    left: 12px;
+    padding: 10px 15px;
+    color: #718096;
+    z-index: 1;
+}
+
+
 .multipliersInfo {
     background-color: azure;
     background: azure;
@@ -157,6 +197,7 @@ h3 {
 
 .indicatorHeader {
     display: flex;
+    align-items: center;
     gap: 15px;
     margin-bottom: 20px;
 }
@@ -210,7 +251,7 @@ h3 {
 }
 
 .proxiesSection h4 {
-    color: #2d3748;
+    color: #4a5568;
     margin-bottom: 12px;
     display: flex;
     align-items: center;
@@ -408,25 +449,34 @@ h3 {
     background: #38a169;
 }
 
-.totalImpact {
+.impactSROI {
+    display: flex;
+    justify-content: space-around;
     background: linear-gradient(135deg, #48bb78 0%, #3cff3c 100%);
-    color: white;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+    color: #04215b;
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px;
 }
 
-.impactLabel {
+.totalImpact,
+.SROI {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+}
+
+.impactLabel,
+.SROILabel {
     font-size: 1.1em;
     opacity: 0.95;
     margin-bottom: 8px;
 }
 
-.impactValue {
+.impactValue,
+#SROIValue {
     font-size: 2.5em;
     font-weight: bold;
 }
@@ -461,7 +511,7 @@ h3 {
     background: #04215b;
     display: flex;
     flex-direction: column;
-    justify-content: left;
+    justify-content: center;
     padding: 15px 10px;
     color: white;
     font-size: small;

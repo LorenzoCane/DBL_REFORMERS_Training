@@ -25,16 +25,31 @@
 
     <div class="projectTitleSec">
         <label class="projectTitleLabel">Analysis Name</label>
-        <input type="text" id="projectTitle" class="projectTitleInput" placeholder="Analisys Name"
+        <input type="text" id="projectTitle" class="projectTitleInput" placeholder="Type analysis name"
             value="SEIA Training - Example">
+    </div>
+
+    <div class="investment">
+        <label>Investment Cost</label>
+        <div class="investmentValue">
+            <span id="investmentUnit">€</span>
+            <input type="number" id="investmentValue" placeholder="Insert investment cost" value=20000 min=0>
+        </div>
     </div>
 
     <div class="indicatorsContainer">
     </div>
 
-    <div class="totalImpact">
-        <div class="impactLabel">Total Social Impact Value:</div>
-        <div class="impactValue">EUR 0.00</div>
+    <div class="impactSROI">
+        <div class="totalImpact">
+            <div class="impactLabel">Total Social Impact Value:</div>
+            <div class="impactValue">EUR 0.00</div>
+        </div>
+
+        <div class="SROI">
+            <div class="SROILabel">SROI Ratio:</div>
+            <div id="SROIValue">0.00:1</div>
+        </div>
     </div>
 
     <div class="finalBtn">
@@ -58,9 +73,11 @@
         <p>
             This tool helps you calculate Social and Environmental Impact Assessment (SEIA) and Social Return on
             Investment (SROI).
-            Add indicators relevant to the project, define proxies with monetary values, and assign stakeholder weights
+            Add indicators relevant to the project, define proxies with monetary values, and assign stakeholder
+            weights
             (1-10) to
-            prioritize different impacts. The multiplier system ensures that higher-priority stakeholder concerns
+            prioritize different impacts. The multiplier system ensures that higher-priority stakeholder
+            concerns
             receive appropriate weighting
             in the final impact calculation.
 
@@ -80,7 +97,8 @@
                     src="img/logo-eu.svg">
             </p>
             <p class="euFundedLabel">
-                This project has received funding from the European Union’s research and innovation programme Horizon
+                This project has received funding from the European Union’s research and innovation programme
+                Horizon
                 Europe under the grant agreement No.101136211
             </p>
         </div>

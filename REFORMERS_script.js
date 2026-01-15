@@ -9,6 +9,7 @@ const addIndicatorBtn = document.querySelector(".addIndicatorBtn");
 const defaultBtn = document.querySelector(".defaultBtn");
 
 const projectTitleInput = document.querySelector(".projectTitleInput");
+const investmentCost = document.querySelector('#investmentValue');
 
 //Default Example
 const defaultSetup = [
@@ -43,7 +44,7 @@ const defaultSetup = [
 
 var indicators = JSON.parse(JSON.stringify(defaultSetup));
 
-var projectName = 'SEIA_Training'
+var projectName = projectTitleInput.value;
 //=========================================================
 //FUNCTIONS
 
@@ -69,10 +70,12 @@ function createElement(tag, className, content) {
     return element;
 }
 
-function updateProjectTitle(newName) {
-    projectName = newName;
-    return 0;
+function updateInvestmentCost(value) {
+    let checkedValue = Math.max(1, parseInt(value));
+    investmentCost.value = checkedValue;
+    renderAll();
 }
+
 //--------------------------------------------------------
 // LOGIC IMPLEMENTATION
 
@@ -110,7 +113,12 @@ function getTotalImpact() {
     return impact;
 }
 
-//SROI calculation (to be done)
+//SROI calculation 
+function calculateSROI() {
+    var totalImpact = getTotalImpact();
+
+    return totalImpact / investmentCost.value;
+}
 
 //--------------------------------------------------------
 //Indicators Functions
@@ -354,16 +362,27 @@ function renderIndicators() {
     });
 }
 
-//Update total impact
+//Update total impact & SROI as a consecuence => SROI update all the time
 function renderTotalImpact() {
     var totalElement = document.querySelector('.impactValue');
-    totalElement.textContent = '€' + getTotalImpact().toLocaleString('en-US', {
+    var totalImpact = getTotalImpact();
+
+    //Impact
+    totalElement.textContent = '€' + totalImpact.toLocaleString('en-US', {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0
     });
+
+    //SROI
+    var sroi = calculateSROI();
+    console.log(sroi);
+    var sroiElement = document.getElementById('SROIValue');
+    sroiElement.textContent = sroi.toFixed(2) + ':1';
+
 }
 
 function renderAll() {
+    document.title = projectName;
     renderIndicators();
     renderTotalImpact();
 }
@@ -435,6 +454,12 @@ exportPDFBtn.addEventListener("click", exportToPDF);
 //Change title
 projectTitleInput.addEventListener("change", (e) => {
     projectName = e.target.value;
+    renderAll();
+});
+
+//Change investment cost
+investmentCost.addEventListener("change", function (e) {
+    updateInvestmentCost(e.target.value);
 });
 
 //=========================================================
