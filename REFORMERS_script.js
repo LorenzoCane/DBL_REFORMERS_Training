@@ -3,9 +3,12 @@
 
 //=========================================================
 //CONST & GLOBAL VAR
-const exportBtn = document.querySelector(".exportBtn");
+const exportCSVBtn = document.querySelector("#CSVexport");
+const exportPDFBtn = document.querySelector("#PDFexport");
 const addIndicatorBtn = document.querySelector(".addIndicatorBtn");
 const defaultBtn = document.querySelector(".defaultBtn");
+
+const projectTitleInput = document.querySelector(".projectTitleInput");
 
 //Default Example
 const defaultSetup = [
@@ -38,8 +41,9 @@ const defaultSetup = [
 ];
 
 
-let indicators = defaultSetup;
+var indicators = JSON.parse(JSON.stringify(defaultSetup));
 
+var projectName = 'SEIA_Training'
 //=========================================================
 //FUNCTIONS
 
@@ -63,6 +67,11 @@ function createElement(tag, className, content) {
     if (className) element.className = className;
     if (content) element.innerHTML = content;
     return element;
+}
+
+function updateProjectTitle(newName) {
+    projectName = newName;
+    return 0;
 }
 //--------------------------------------------------------
 // LOGIC IMPLEMENTATION
@@ -176,7 +185,6 @@ function createIndicatorHeader(indicator) {
 
     var weightGroup = createElement('div', 'formGroup weightGroup');
     weightGroup.innerHTML = '<label>Stakeholder Weight (1-10)</label>';
-    weightGroup.innerHTML = '<label'
     var weightInput = createElement('input');
     weightInput.type = 'number';
     weightInput.min = '1';
@@ -364,7 +372,8 @@ function renderAll() {
 //Export function
 
 function exportToCSV() {
-    var csv = 'Indicator,Stakeholder Weight (1-10),Proxy,Proxy Value,Raw Value,Multiplier,Result\n';
+    var csv = 'Analysis Name: ' + projectName + '\n\n';
+    csv += 'Indicator,Stakeholder Weight (1-10),Proxy,Proxy Value,Raw Value,Multiplier,Result\n';
 
     for (var i = 0; i < indicators.length; i++) {
         var ind = indicators[i];
@@ -388,9 +397,15 @@ function exportToCSV() {
     var url = window.URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
-    a.download = 'seia_sroi_analysis.csv';
+    a.download = projectName + '.csv';
     a.click();
     window.URL.revokeObjectURL(url);
+}
+
+//Print screen info without btns (button must be query here because new one could be created)
+function exportToPDF() {
+    document.title = projectName;
+    window.print();
 }
 
 //--------------------------------------------------------
@@ -413,7 +428,14 @@ defaultBtn.addEventListener("click", () => {
     window.location.reload();
 });
 //Export to CSV
-exportBtn.addEventListener("click", exportToCSV);
+exportCSVBtn.addEventListener("click", exportToCSV);
+//Export to PDF
+exportPDFBtn.addEventListener("click", exportToPDF);
+
+//Change title
+projectTitleInput.addEventListener("change", (e) => {
+    projectName = e.target.value;
+});
 
 //=========================================================
 renderAll();
