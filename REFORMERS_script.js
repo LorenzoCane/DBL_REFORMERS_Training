@@ -186,8 +186,10 @@ function createIndicatorHeader(indicator) {
     var nameInput = createElement('input');
     nameInput.type = 'text';
     nameInput.value = indicator.name;
+    nameInput.placeholder = 'Type indicator name'
     nameInput.addEventListener('change', function (e) {
-        updateIndicatorField(indicator.id, 'name', e.target.value);
+        var newName = e.target.value === '' ? 'Indicator name undefined' : e.target.vale;
+        updateIndicatorField(indicator.id, 'name', newName);
     });
     nameGroup.appendChild(nameInput);
 
@@ -198,6 +200,7 @@ function createIndicatorHeader(indicator) {
     weightInput.min = '1';
     weightInput.max = '10';
     weightInput.value = indicator.weight;
+    weightInput.placeholder = 'Insert valid weight (1-10)'
     weightInput.addEventListener('change', function (e) {
         updateIndicatorField(indicator.id, 'weight', e.target.value);
     });
@@ -215,12 +218,34 @@ function createIndicatorHeader(indicator) {
     return header;
 }
 
+//Note section for each indicator
+function createNoteSection(indicator) {
+    var section = createElement('div', 'noteSection');
+    var label = createElement('label', 'noteLabel');
+    var textArea = createElement('textarea', 'noteText');
+
+    label.textContent = 'Notes (3 rows limit)';
+    label.style.display = 'block';
+
+    textArea.value = indicator.notes || '';
+    textArea.addEventListener('change', function (e) {
+        updateIndicatorField(indicator.id, 'notes', e.target.value);
+    });
+
+
+    section.appendChild(label);
+    section.appendChild(textArea);
+
+    return section;
+}
+
 //Create the whole indicator box
 function createIndicatorCard(indicator) {
     var card = createElement('div', 'indicatorCard');
 
     card.appendChild(createIndicatorHeader(indicator));
     card.appendChild(createProxiesSection(indicator));
+    card.appendChild(createNoteSection(indicator));
     card.appendChild(createResultsGrid(indicator));
 
     return card;
@@ -269,10 +294,11 @@ function createProxyRow(indicatorId, proxy, isOnlyProxy) {
     var nameDiv = createElement('div', 'proxyName');
     var nameInput = createElement('input');
     nameInput.type = 'text';
-    nameInput.placeholder = 'Proxy name';
+    nameInput.placeholder = 'Type proxy name';
     nameInput.value = proxy.name;
     nameInput.addEventListener('change', function (e) {
-        updateProxyField(indicatorId, proxy.id, 'name', e.target.value);
+        var newName = e.target.value === '' ? 'Proxy name undefined' : e.target.value;
+        updateProxyField(indicatorId, proxy.id, 'name', newName);
     });
     nameDiv.appendChild(nameInput);
 
@@ -411,6 +437,8 @@ function exportToCSV() {
     }
 
     csv += '\nTotal Impact,,,,,,€' + getTotalImpact().toFixed(2);
+    //csv += '\nInvestment Cost,,,,,,€' + investmentCost.value;
+    //csv += '\nSROI Ratio,,,,,,' + sroi.toFixed(2) + ':1';
 
     var blob = new Blob([csv], { type: 'text/csv' });
     var url = window.URL.createObjectURL(blob);
