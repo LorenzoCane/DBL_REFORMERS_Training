@@ -218,7 +218,7 @@ function createIndicatorHeader(indicator) {
     nameInput.value = indicator.name;
     nameInput.placeholder = 'Type indicator name'
     nameInput.addEventListener('change', function (e) {
-        var newName = e.target.value === '' ? 'Indicator name undefined' : e.target.vale;
+        var newName = e.target.value === '' ? 'Indicator name undefined' : e.target.value;
         updateIndicatorField(indicator.id, 'name', newName);
     });
     nameGroup.appendChild(nameInput);
