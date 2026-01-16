@@ -29,11 +29,25 @@
             value="SEIA Training - Example">
     </div>
 
-    <div class="investment">
-        <label>Investment Cost</label>
-        <div class="investmentValue">
-            <span id="investmentUnit">€</span>
+    <div class="parameters">
+        <div class="investment">
+            <label>Investment Cost [€]</label>
             <input type="number" id="investmentValue" placeholder="Insert investment cost" value=20000 min=0>
+        </div>
+        <div class="ratio">
+            <label>Ratio unit</label>
+            <select id="ratioType" aria-placeholder="Select normalization">
+                <option value="">---</option>
+                <option value="inhab">Inhabitants (inhab)</option>
+                <option value="MW">Installed megawatt (MW)</option>
+                <option value="yrs">Years (yrs)</option>
+                <option value="inhab yrs">Inhabitant ⋅ years (inhab ⋅ yrs)</option>
+            </select>
+        </div>
+        <div class="ratio">
+            <label>Ratio value</label>
+            <input type="number" id="ratioValue" placeholder="Insert value (e.g. enter 1000 for 1000 inhab.)" min="0"
+                step="1">
         </div>
     </div>
 
@@ -42,7 +56,7 @@
 
     <div class="impactSROI">
         <div class="totalImpact">
-            <div class="impactLabel">Total Social Impact Value:</div>
+            <div class="impactLabel">Social Impact Value:</div>
             <div class="impactValue">EUR 0.00</div>
         </div>
 

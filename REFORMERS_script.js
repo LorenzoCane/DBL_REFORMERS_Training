@@ -11,6 +11,9 @@ const defaultBtn = document.querySelector(".defaultBtn");
 const projectTitleInput = document.querySelector(".projectTitleInput");
 const investmentCost = document.querySelector('#investmentValue');
 
+const ratioUnit = document.querySelector("#ratioType");
+const ratioValueInput = document.querySelector("#ratioValue");
+
 //Default Example
 const defaultSetup = [
     {
@@ -45,12 +48,12 @@ const defaultSetup = [
 var indicators = JSON.parse(JSON.stringify(defaultSetup));
 
 var projectName = projectTitleInput.value;
+var ratioType = '';
+var ratioValue = 0;
 //=========================================================
 //FUNCTIONS
 
 //General Utils
-
-
 function getMaxId(arr, prop) {
     //Get the number of higher Indicator or proxy. To assign the correct one to the next
     var max = 0;
@@ -73,6 +76,17 @@ function createElement(tag, className, content) {
 function updateInvestmentCost(value) {
     let checkedValue = Math.max(1, parseInt(value));
     investmentCost.value = checkedValue;
+    renderAll();
+}
+
+function updateRatioUnit(unit) {
+    ratioType = unit;
+    renderAll();
+}
+
+function updateRatioValue(value) {
+    let checkedValue = Math.max(0, parseInt(value));
+    ratioValue = checkedValue;
     renderAll();
 }
 
@@ -118,6 +132,22 @@ function calculateSROI() {
     var totalImpact = getTotalImpact();
 
     return totalImpact / investmentCost.value;
+}
+
+//Obtain impact normalizaed per selected unit or total impact
+function getValueWithRatio(value) {
+    if (ratioType && ratioValue > 0) {
+        var normalizedValue = value / ratioValue;
+        return '€' + normalizedValue.toLocaleString('en-US', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }) + ' / ' + ratioUnit.value;
+    }
+
+    return '€' + value.toLocaleString('en-US', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    });
 }
 
 //--------------------------------------------------------
@@ -305,7 +335,7 @@ function createProxyRow(indicatorId, proxy, isOnlyProxy) {
     var valueDiv = createElement('div', 'proxyValue');
     var valueInput = createElement('input');
     valueInput.type = 'number';
-    valueInput.placeholder = 'Value';
+    valueInput.placeholder = 'Insert value';
     valueInput.value = proxy.value;
     valueInput.addEventListener('change', function (e) {
         updateProxyField(indicatorId, proxy.id, 'value', e.target.value);
@@ -393,11 +423,8 @@ function renderTotalImpact() {
     var totalElement = document.querySelector('.impactValue');
     var totalImpact = getTotalImpact();
 
-    //Impact
-    totalElement.textContent = '€' + totalImpact.toLocaleString('en-US', {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    });
+    //Impact (normalized or total)
+    totalElement.textContent = getValueWithRatio(totalImpact);
 
     //SROI
     var sroi = calculateSROI();
@@ -436,7 +463,7 @@ function exportToCSV() {
         }
     }
 
-    csv += '\nTotal Impact,,,,,,€' + getTotalImpact().toFixed(2);
+    //csv += '\n Impact,,,,,,€' + getValueWithRatio(getTotalImpact());
     //csv += '\nInvestment Cost,,,,,,€' + investmentCost.value;
     //csv += '\nSROI Ratio,,,,,,' + sroi.toFixed(2) + ':1';
 
@@ -490,5 +517,12 @@ investmentCost.addEventListener("change", function (e) {
     updateInvestmentCost(e.target.value);
 });
 
+//Change Ratio
+ratioUnit.addEventListener("change", function (e) {
+    updateRatioUnit(e.target.value);
+});
+ratioValueInput.addEventListener("change", function (e) {
+    updateRatioValue(e.target.value);
+});
 //=========================================================
 renderAll();
