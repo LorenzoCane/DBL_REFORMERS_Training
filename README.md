@@ -11,15 +11,16 @@ The current version of the SEIA Training Tools includes:
 - **Dynamic Indicator Management**: Add, edit, and remove social/environmental impact indicators
 - **Proxy-Based Valuation**: Assign multiple monetary proxies to each indicator and see their combined value
 - **Stakeholder Weighting**: Prioritize indicators based on stakeholder importance (1-10 scale)
-- **Automatic Calculations**: Real-time calculation of raw values, multipliers, and Total social value
+- **Automatic Calculations**: Real-time calculation of raw values, multipliers, and social impact
 - **Custom Multiplier System**: Increase the social value of proxies using stakeholder importance:
 
     - *Low Priority* (1-3) : 1.0x multiplier
     - *Medium Priority* (4-7) : 1.25x multiplier 
     - *High Priority* (8-10) : 1.5x multiplier (High priority)
 
-
-- **CSV Export**: Download complete analysis for further processing
+- **Custom Social Impact normalization**: If you provide both a normalization unit (years, Megawatt installed, inhabitants, or inahbitants*years) and the normalization quantity the social impact will be re*normalized accordinf to your preference (e.g. with a 45,000 EUR impact selectin *inhabitants* and 5,000 inhab. the normalized impact will be 9 EUR/inhab) 
+- **Take your note**: in the last version all indicators cards shws a *Notes* section where you can take personal annotation for further purpouse
+- **CSV  and PDF Export**: Download complete analysis for further processing
 - **Reset Functionality**: If you feel lost, restore default example indicators
 - **No Dependencies** : Pure HTML, CSS, and vanilla JavaScript
 
@@ -42,12 +43,19 @@ Feel free to modify the SEIA with your data, and if you feel lost you can always
 2. Enter the proxy name (e.g., "Reduced cancer incidence")
 3. Enter the monetary value in euros
 
+### Normaling social impact
+1. In the *Ratio unit* menu select the normalization unit among the proposed ones
+2. Insert the *Ratio value* (e.g. insert 1,000 if you want to renormalized results on 1,000 inhabitants)
+3. In the final *Social Impact* section you can now read your normalized results
+
+*Note: to avoid any kind of problem the normalization starts if both unit and value are provided.*
+
 ### Understanding Results
 For each indicator, you'll see:
 
 - **Raw Value**: Sum of all proxy values
 - **Multiplier**: Based on stakeholder weight (1.0, 1.25, or 1.5)
-- **Result**: Raw Value × Multiplier
+- **Result**: Raw Value × Multiplier (/ normalization)
 
 The **Total Social Impact Value** box shows the sum of all indicator results.
 
@@ -65,19 +73,30 @@ Click "🔄 *Reset to Default*" to restore the default example and clear any cus
 ## Calculation Methodology
 
 ### Social Value Formula:
+The final social Impact Value (without normalisation) is given by :
+$$
+Social \  Impact = \sum_{i=1}^n R_i \ ,
+$$
 
-```
-Result = Raw Value × Multiplier
+where $R_i$ is the partial results for any considered indicator. The evaluation of any given indicator is obtained as
 
-Where:
+$$
+ R_i = Raw \ Value \times Multiplier \ ,
+$$
+
+where:
 - Raw Value = Sum of all proxy values for an indicator
 - Multiplier = f(Stakeholder Weight)
   - If weight ∈ [1,3]: Multiplier = 1.0
   - If weight ∈ [4,7]: Multiplier = 1.25
   - If weight ∈ [8,10]: Multiplier = 1.5
 
-Total Impact = Σ(Result for all indicators)
-```
+*Note: if normalization is applied the right term of the forst equation is divided by the normalization quanity provided by the iser in the "Ration Value" field and the social impact value is given in EUR/[unit], where the normalization unit is decided by the user in the Ration Unit menu.*
+### SROI Formula:
+SROI calculation take int consideration the investment cost:
+$$
+SROI = \frac{Investment}{Social \ Impact} 
+$$
 
 ## Contributing 
 
@@ -109,3 +128,11 @@ This tools is part of the [REFORMERS Project](https://reformers-energyvalleys.eu
 ## Further Reading 
 
 - [Social return on investment](https://en.wikipedia.org/wiki/Social_return_on_investment)
+
+
+
+
+
+## General info
+- Current version: v1.0.0
+- Last modification: 19th Jan 2026
